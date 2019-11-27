@@ -83,14 +83,17 @@ class VisualRolesCog(commands.Cog):
         role_embed.title = "Linked Roles"
         role_embed.description = "Roles that have been linked with reactions/emojis."
 
-        for key in roledict:
-            valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
-            if valid_emoji:
-                role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the emoji " + str(roledict[key]), inline = False)
-                # TODO: clean up the formatting to look better
+        if not roledict:
+            role_embed.add_field(name = "Nothing to see here. Move along.", value = "No roles have been linked with emojis yet.")
+        else:
+            for key in roledict:
+                valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
+                if valid_emoji:
+                    role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the emoji " + str(roledict[key]), inline = False)
+                    # TODO: clean up the formatting to look better
 
-            # TODO: have a separate list of invalid roles/emojis
-            # and instructions on how to clean them up
+                # TODO: have a separate list of invalid roles/emojis
+                # and instructions on how to clean them up
 
         await ctx.send(embed = role_embed)
 
