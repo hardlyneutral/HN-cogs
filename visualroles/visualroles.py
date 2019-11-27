@@ -81,10 +81,10 @@ class VisualRolesCog(commands.Cog):
 
         role_embed = discord.Embed()
         role_embed.title = "Linked Roles"
-        role_embed.description = "Roles that have been linked with reactions/emojis."
+        role_embed.description = "**Roles that have been linked with reactions/emojis.\n\n**"
 
         if not roledict:
-            role_embed.add_field(name = "Nothing to see here. Move along.", value = "No roles have been linked with emojis yet.")
+            role_embed.add_field(name = "No roles have been linked with emojis yet. Use the link command to add one:", value = "```{p}visualroles link some_role some_emoji```".format(p=ctx.prefix))
         else:
             for key in roledict:
                 valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
