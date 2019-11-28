@@ -162,25 +162,12 @@ class VisualRolesCog(commands.Cog):
             await self.config.guild(ctx.guild).role_reactions.set(roledict)
             await ctx.send("Successfully unlinked {role}!".format(role=role))
 
-
-
-    #     message = await self.safe_get_message(channel, message_id)
-    #     if message is None:
-    #         await ctx.send(error("Message not found."))
-    #         return
-    #     else:
-    #         msg_conf = self.get_message_config(server.id, channel.id, message.id)
-    #         emoji_id = discord.utils.get(guild.emojis, name=emoji)
-    #         if emoji_id:
-    #             # do stuff
-    #         else:
-    #             await ctx.send(error("Emoji or reaction not found."))
-    #             return
-
-
     # TODO: command to clear all settings (channel id, message id, all role and reaction links)
 
-    # Events
+    # TODO: event listener on the defined message in the defined channel for the defined reactions that grants the correct role
+    # on_raw_reaction_add(payload)
+    # - https://discordpy.readthedocs.io/en/latest/api.html?highlight=raw%20reaction#discord.on_raw_reaction_add
+    # - https://discordpy.readthedocs.io/en/latest/api.html?highlight=raw%20reaction#discord.RawReactionActionEvent
 
     # async def on_raw_reaction_add(payload):
     #     if payload.guild_id is None:
