@@ -1,4 +1,5 @@
 import discord
+from discord.utils import get
 from redbot.core import commands, Config, checks
 from redbot.core.utils.chat_formatting import escape, info, error
 
@@ -87,21 +88,25 @@ class VisualRolesCog(commands.Cog):
             role_embed.add_field(name = "No roles have been linked with emojis yet. Use the link command to add one:", value = "```{p}visualroles link some_role some_emoji```".format(p=ctx.prefix))
         else:
             # get the valid emojis and list them along with valid roles
-            # TODO: add valid roles to the logic
             role_embed.add_field(name = "__**Valid Links**__", value = "*Both the role and the custom emoji exist on the server.*\n\u200b", inline = False)
             for key in roledict:
                 valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
-                if valid_emoji:
+                valid_role = get(ctx.guild.roles, name=key)
+                if valid_emoji and valid_role:
                     role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the emoji **" + str(roledict[key]) + "**.", inline = True)
-                    # TODO: clean up the formatting to look better
+                else: role_embed.add_field(name = "None Found", value = "No valid links found. Add some!", inline = True)
+
+            role_embed.add_field(name = "\u200b", value = "\u200b", inline = False)
 
             # get the invalid emojis and list them along with valid roles
-            # TODO: add invalid roles to the logic
             role_embed.add_field(name = "__**Invalid Links**__", value = "*The role or emoji does not exist on the server.*\n\u200b", inline = False)
             for key in roledict:
                 valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
-                if not valid_emoji:
+                valid_role = get(ctx.guild.roles, name=key)
+                if not valid_emoji or not valid_role:
                     role_embed.add_field(name = key, value = roledict[key], inline = True)
+                else:
+                    role_embed.add_field(name = "None Found", value = "No invalid links found. Yay!", inline = False)
 
             # TODO: instructions on how to clean them up
 
