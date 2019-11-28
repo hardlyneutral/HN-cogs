@@ -142,6 +142,27 @@ class VisualRolesCog(commands.Cog):
 
 
     # TODO: command to unlink a role and reaction; just specify the role
+    @visualroles.command(name="unlink")
+    async def unlink_role_to_reaction(self, ctx, role):
+        """Unlink a role from its linked reaction."""
+
+        if role is None:
+            await ctx.send(error("You must specify a role name."))
+            return
+
+        roledict = await self.config.guild(ctx.guild).role_reactions()
+
+        try:
+            roledict.pop(role)
+        except KeyError:
+            await ctx.send(error("{role} was not found in the list of linked roles.".format(role=role)))
+        except:
+            await ctx.send(error("Hmmm. Something went wrong. Perhaps try again."))
+        else:
+            await self.config.guild(ctx.guild).role_reactions.set(roledict)
+            await ctx.send("Successfully unlinked {role}!".format(role=role))
+
+
 
     #     message = await self.safe_get_message(channel, message_id)
     #     if message is None:
