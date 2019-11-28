@@ -86,14 +86,24 @@ class VisualRolesCog(commands.Cog):
         if not roledict:
             role_embed.add_field(name = "No roles have been linked with emojis yet. Use the link command to add one:", value = "```{p}visualroles link some_role some_emoji```".format(p=ctx.prefix))
         else:
+            # get the valid emojis and list them along with valid roles
+            # TODO: add valid roles to the logic
+            role_embed.add_field(name = "__**Valid Links**__", value = "*Both the role and the custom emoji exist on the server.*\n\u200b", inline = False)
             for key in roledict:
                 valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
                 if valid_emoji:
-                    role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the emoji " + str(roledict[key]), inline = False)
+                    role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the emoji **" + str(roledict[key]) + "**.", inline = True)
                     # TODO: clean up the formatting to look better
 
-                # TODO: have a separate list of invalid roles/emojis
-                # and instructions on how to clean them up
+            # get the invalid emojis and list them along with valid roles
+            # TODO: add invalid roles to the logic
+            role_embed.add_field(name = "__**Invalid Links**__", value = "*The role or emoji does not exist on the server.*\n\u200b", inline = False)
+            for key in roledict:
+                valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
+                if not valid_emoji:
+                    role_embed.add_field(name = key, value = roledict[key], inline = True)
+
+            # TODO: instructions on how to clean them up
 
         await ctx.send(embed = role_embed)
 
