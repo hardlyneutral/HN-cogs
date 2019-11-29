@@ -180,6 +180,8 @@ class VisualRolesCog(commands.Cog):
             role = discord.utils.get(guild.roles, name = role_name)
             if role:
                 await member.add_roles(role, reason="auto role assignment")
+                # TODO: send message to member if they already have the role
+                # TODO: send message to member confirming role addition
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
@@ -202,3 +204,5 @@ class VisualRolesCog(commands.Cog):
             role = discord.utils.get(guild.roles, name = role_name)
             if role:
                 await member.remove_roles(role, reason="auto role assignment")
+                # TODO: send message to member if they don't have the role
+                # TODO: send message to member confirming role removal
