@@ -94,7 +94,6 @@ class VisualRolesCog(commands.Cog):
                 valid_role = get(ctx.guild.roles, name=key)
                 if valid_emoji and valid_role:
                     role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the emoji **" + str(roledict[key]) + "**.", inline = True)
-                else: role_embed.add_field(name = "None Found", value = "No valid links found. Add some!", inline = True)
 
             role_embed.add_field(name = "\u200b", value = "\u200b", inline = False)
 
@@ -105,10 +104,6 @@ class VisualRolesCog(commands.Cog):
                 valid_role = get(ctx.guild.roles, name=key)
                 if not valid_emoji or not valid_role:
                     role_embed.add_field(name = key, value = roledict[key], inline = True)
-                else:
-                    role_embed.add_field(name = "None Found", value = "No invalid links found. Yay!", inline = False)
-
-            # TODO: instructions on how to clean them up
 
         await ctx.send(embed = role_embed)
 
