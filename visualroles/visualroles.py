@@ -159,13 +159,10 @@ class VisualRolesCog(commands.Cog):
 
     # TODO: command to clear all settings (channel id, message id, all role and reaction links)
 
-    # TODO: event listener on the defined message in the defined channel for the defined reactions that grants the correct role
-    # on_raw_reaction_add(payload)
-    # - https://discordpy.readthedocs.io/en/latest/api.html?highlight=raw%20reaction#discord.on_raw_reaction_add
-    # - https://discordpy.readthedocs.io/en/latest/api.html?highlight=raw%20reaction#discord.RawReactionActionEvent
-
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
+        """Add a role to a member based on their reaction."""
+
         if payload.guild_id is None:
             return # Reaction is on a private message
 
@@ -183,3 +180,25 @@ class VisualRolesCog(commands.Cog):
             role = discord.utils.get(guild.roles, name = role_name)
             if role:
                 await member.add_roles(role, reason="auto role assignment")
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_remove(self, payload):
+        """Remove a role to a member based on their reaction."""
+
+        if payload.guild_id is None:
+            return # Reaction is on a private message
+
+        guild = self.bot.get_guild(payload.guild_id)
+        member = guild.get_member(payload.user_id)
+        channel_id = await self.config.guild(guild).role_request_channel()
+        message_id = await self.config.guild(guild).role_request_message()
+        roledict = await self.config.guild(guild).role_reactions()
+
+        for key, value in roledict.items():
+            if payload.emoji.name == value:
+                role_name = key
+
+        if payload.channel_id == channel_id and payload.message_id == message_id and role_name:
+            role = discord.utils.get(guild.roles, name = role_name)
+            if role:
+                await member.remove_roles(role, reason="auto role assignment")
