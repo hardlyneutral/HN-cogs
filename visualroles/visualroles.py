@@ -169,35 +169,17 @@ class VisualRolesCog(commands.Cog):
         if payload.guild_id is None:
             return # Reaction is on a private message
 
-        print("test")
-        print(self.config.guild(ctx.guild).role_request_channel())
+        guild = self.bot.get_guild(payload.guild_id)
+        member = guild.get_member(payload.user_id)
+        channel_id = await self.config.guild(guild).role_request_channel()
+        message_id = await self.config.guild(guild).role_request_message()
+        roledict = await self.config.guild(guild).role_reactions()
 
-        if payload.channel_id == self.retrieve_channel_id() and payload.message_id == self.retrieve_message_id():
-            role = discord.utils.get(guild.roles, name = self.retrieve_role_name(payload.emoji))
+        for key, value in roledict.items():
+            if payload.emoji.name == value:
+                role_name = key
+
+        if payload.channel_id == channel_id and payload.message_id == message_id and role_name:
+            role = discord.utils.get(guild.roles, name = role_name)
             if role:
                 await member.add_roles(role, reason="auto role assignment")
-
-        roledict = await self.config.guild(ctx.guild).role_reactions()
-        member = ctx.guild.get_member(payload.user_id)
-        role = discord.utils.get(guild.roles, name="testrole")
-
-        # if channel_id and message_id and roledict:
-            #do stuff
-
-
-        # if str(payload.channel_id) in role_assignment_channel:
-        #     await member.add_roles(role, reason="testrole")
-
-    async def retrieve_channel_id(self, ctx):
-        channel_id = await self.config.guild(ctx.guild).role_request_channel()
-        return channel_id
-
-    async def retrieve_message_id(self, ctx):
-        channel_id = await self.config.guild(ctx.guild).role_request_message()
-        return message_id
-
-    async def retrieve_role_name(self, ctx, emoji):
-        roledict = await self.config.guild(ctx.guild).role_reactions()
-        for key, value in roledict.items():
-            if emoji == value:
-                return key
