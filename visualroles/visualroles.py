@@ -79,25 +79,25 @@ class VisualRolesCog(commands.Cog):
 
         role_embed = discord.Embed()
         role_embed.title = "Linked Roles"
-        role_embed.description = "**Roles that have been linked with reactions/emojis.\n\n**"
+        role_embed.description = "**Roles that have been linked with custom emoji.\n\n**"
 
         if not roledict:
-            role_embed.add_field(name = "No roles have been linked with emojis yet. Use the link command to add one:", value = "```{p}visualroles link some_role some_emoji```".format(p=ctx.prefix))
+            role_embed.add_field(name = "No roles have been linked with custom emoji yet. Use the link command to add one:", value = "```{p}visualroles link some_role custom_emoji```".format(p=ctx.prefix))
         else:
-            # get the valid emojis and list them along with valid roles
+            # get the valid custom emoji and list them along with valid roles
             role_embed.add_field(name = "__**Valid Links**__", value = "*Both the role and the custom emoji exist on the server.*\n\u200b", inline = False)
             for key in roledict:
-                valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
+                valid_emoji = discord.utils.get(ctx.guild.emoji, name=roledict[key])
                 valid_role = get(ctx.guild.roles, name=key)
                 if valid_emoji and valid_role:
-                    role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the emoji **" + str(roledict[key]) + "**.", inline = True)
+                    role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the custom emoji **" + str(roledict[key]) + "**.", inline = True)
 
             role_embed.add_field(name = "\u200b", value = "\u200b", inline = False)
 
-            # get the invalid emojis and list them along with valid roles
-            role_embed.add_field(name = "__**Invalid Links**__", value = "*The role or emoji does not exist on the server.*\n\u200b", inline = False)
+            # get the invalid emoji and list them along with valid roles
+            role_embed.add_field(name = "__**Invalid Links**__", value = "*The role or custom emoji does not exist on the server.*\n\u200b", inline = False)
             for key in roledict:
-                valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
+                valid_emoji = discord.utils.get(ctx.guild.emoji, name=roledict[key])
                 valid_role = get(ctx.guild.roles, name=key)
                 if not valid_emoji or not valid_role:
                     role_embed.add_field(name = key, value = roledict[key], inline = True)
@@ -118,18 +118,18 @@ class VisualRolesCog(commands.Cog):
             return
 
         if emoji is None:
-            await ctx.send(error("You must specify an emoji."))
+            await ctx.send(error("You must specify a custom emoji."))
             return
 
-        valid_emoji = discord.utils.get(ctx.guild.emojis, name=emoji)
+        valid_emoji = discord.utils.get(ctx.guild.emoji, name=emoji)
 
         if valid_emoji:
             roledict = await self.config.guild(ctx.guild).role_reactions()
             roledict.update({role : emoji})
             await self.config.guild(ctx.guild).role_reactions.set(roledict)
-            await ctx.send(info("Role and reaction linked successfully!"))
+            await ctx.send(info("Role and custom emoji linked successfully!"))
         else:
-            await ctx.send(error("No valid emoji found with that name."))
+            await ctx.send(error("No valid custom emoji found with that name."))
 
 
     @visualroles.command(name="unlink")
