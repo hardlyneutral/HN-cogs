@@ -5,7 +5,7 @@ from redbot.core.utils.chat_formatting import escape, info, error
 
 class VisualRolesCog(commands.Cog):
     """Adds or removes roles for a user based on reactions."""
-    
+
     def __init__(self, bot):
 
         default_guild = {
@@ -26,7 +26,7 @@ class VisualRolesCog(commands.Cog):
 
     @visualroles.command(name="channel")
     async def set_channel(self, ctx, channel_id: int):
-        """Enter a channel id to set the roles request channel."""
+        """Set the channel id with the message to watch."""
         channel = ctx.guild.get_channel(channel_id)
 
         if channel is None:
@@ -49,7 +49,7 @@ class VisualRolesCog(commands.Cog):
 
     @visualroles.command(name="message")
     async def set_message(self, ctx, message_id: int):
-        """Enter a message id to add roles to."""
+        """Set the message id to watch."""
         channel_id = await self.config.guild(ctx.guild).role_request_channel()
 
         if channel_id is None:
@@ -74,7 +74,7 @@ class VisualRolesCog(commands.Cog):
 
     @visualroles.command(name="list")
     async def list_linked_roles(self, ctx):
-        """List all roles that are linked to reactions/emoji."""
+        """List all roles and custom emoji links."""
         roledict = await self.config.guild(ctx.guild).role_reactions()
 
         role_embed = discord.Embed()
@@ -106,7 +106,7 @@ class VisualRolesCog(commands.Cog):
 
     @visualroles.command(name="link")
     async def link_role_to_reaction(self, ctx, role, emoji):
-        """Link a role to a reaction/emoji."""
+        """Link a role to a custom emoji."""
         if role is None:
             await ctx.send(error("You must specify a role name."))
             return
@@ -134,7 +134,7 @@ class VisualRolesCog(commands.Cog):
 
     @visualroles.command(name="unlink")
     async def unlink_role_to_reaction(self, ctx, role):
-        """Unlink a role from its linked reaction."""
+        """Unlink a role from a custom emoji."""
         if role is None:
             await ctx.send(error("You must specify a role name."))
             return
@@ -175,7 +175,7 @@ class VisualRolesCog(commands.Cog):
 
     @visualroles.command(name="clearall")
     async def clear_all(self, ctx):
-        """Clear all cog settings including channel id, message id, and all links."""
+        """Clear all settings."""
         await self.config.guild(ctx.guild).clear()
         await ctx.send("Settings cleared!")
 
@@ -204,7 +204,7 @@ class VisualRolesCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        """Remove a role to a member based on their reaction."""
+        """Remove a role from a member based on their reaction."""
         if payload.guild_id is None:
             return # Reaction is on a private message
 
