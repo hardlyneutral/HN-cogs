@@ -1,24 +1,16 @@
 {
-  "author": [
-    "hardlyneutral"
-  ],
-  "bot_version": [
-    3,
-    0,
-    0
-  ],
+  "author": "hardlyneutral",
+  "install_msg": "Thank you for installing visualroles.",
   "name": "visualroles",
-  "description": "Cog to add or remove roles based on reactions to messages in a specific channel",
-  "hidden": true,
-  "install_msg": "Thank you for installing VisualRoles.",
   "short": "Add or remove roles based on reactions",
+  "description": "Cog to add or remove roles based on reactions to messages in a specific channel",
   "tags": [
     "react",
     "reaction",
     "role",
     "roles",
     "tools",
-    "utils",
-    "hardlyneutral"
-  ]
+    "utils"
+  ],
+  "hidden": false
 }
