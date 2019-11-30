@@ -199,6 +199,7 @@ class VisualRolesCog(commands.Cog):
         channel_id = await self.config.guild(guild).role_request_channel()
         message_id = await self.config.guild(guild).role_request_message()
         roledict = await self.config.guild(guild).role_reactions()
+        role_name = None
 
         for key, value in roledict.items():
             if payload.emoji.name == value:
@@ -222,6 +223,7 @@ class VisualRolesCog(commands.Cog):
         channel_id = await self.config.guild(guild).role_request_channel()
         message_id = await self.config.guild(guild).role_request_message()
         roledict = await self.config.guild(guild).role_reactions()
+        role_name = None
 
         for key, value in roledict.items():
             if payload.emoji.name == value:
