@@ -180,6 +180,12 @@ class VisualRolesCog(commands.Cog):
         await ctx.send(embed = settings_embed)
 
     # TODO: command to clear all settings (channel id, message id, all role and reaction links)
+    @visualroles.command(name="clearall")
+    async def clear_all(self, ctx):
+        """Clear all cog settings including channel id, message id, and all links."""
+
+        await self.config.guild(ctx.guild).clear()
+        await ctx.send("Settings cleared!")
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
