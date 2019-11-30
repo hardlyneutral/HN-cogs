@@ -136,7 +136,6 @@ class VisualRolesCog(commands.Cog):
             await ctx.send(error("No valid emoji found with that name."))
 
 
-    # TODO: command to unlink a role and reaction; just specify the role
     @visualroles.command(name="unlink")
     async def unlink_role_to_reaction(self, ctx, role):
         """Unlink a role from its linked reaction."""
