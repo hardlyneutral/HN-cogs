@@ -156,6 +156,29 @@ class VisualRolesCog(commands.Cog):
             await self.config.guild(ctx.guild).role_reactions.set(roledict)
             await ctx.send("Successfully unlinked {role}!".format(role=role))
 
+    @visualroles.command(name="settings")
+    async def settings(self, ctx):
+        """Show the current channel and message settings."""
+
+        channel_id = await self.config.guild(ctx.guild).role_request_channel()
+        message_id = await self.config.guild(ctx.guild).role_request_message()
+
+        settings_embed = discord.Embed()
+        settings_embed.title = "Settings"
+        settings_embed.description = "**Current channel id and message id settings.\n\n**"
+
+        if channel_id:
+            settings_embed.add_field(name = "__**Channel ID**__", value = channel_id, inline = False)
+        else:
+            settings_embed.add_field(name = "__**Channel ID**__", value = "A channel id has not been set.", inline = False)
+
+        if message_id:
+            settings_embed.add_field(name = "__**Channel ID**__", value = message_id, inline = False)
+        else:
+            settings_embed.add_field(name = "__**Message ID**__", value = "A message id has not been set.", inline = False)
+
+        await ctx.send(embed = settings_embed)
+
     # TODO: command to clear all settings (channel id, message id, all role and reaction links)
 
     @commands.Cog.listener()
