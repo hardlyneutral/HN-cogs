@@ -1,13 +1,15 @@
 import discord
 from discord.utils import get
 from redbot.core import commands, Config, checks
-from redbot.core.utils.chat_formatting import escape, info, error
+from redbot.core.utils.chat_formatting import info, error
+
 
 class VisualRolesCog(commands.Cog):
     """Adds or removes roles for a user based on reactions."""
 
-    def __init__(self, bot):
+    def __init__(self, bot, *args, **kwargs):
 
+        super().__init__(*args, **kwargs)
         default_guild = {
             "role_request_channel": None,
             "role_request_message": None,
@@ -41,9 +43,11 @@ class VisualRolesCog(commands.Cog):
         await self.config.guild(ctx.guild).role_request_channel.set(channel_id)
         await self.config.guild(ctx.guild).role_request_message.set(None)
 
-        if channel_id != None:
-            await ctx.send(info("{channel} will now be used for users to select roles.".format(channel=channel.mention)))
-            await ctx.send(info("NOTE: updating the channel has cleared the message setting. You will need to set a new message id using the visualroles message command."))
+        if channel_id is not None:
+            await ctx.send(
+                info("{channel} will now be used for users to select roles.".format(channel=channel.mention)))
+            await ctx.send(info("NOTE: updating the channel has cleared the message setting. You will need to set a "
+                                "new message id using the visualroles message command."))
         else:
             await ctx.send(info("No channel is configured for users to select roles."))
 
@@ -67,8 +71,9 @@ class VisualRolesCog(commands.Cog):
 
         await self.config.guild(ctx.guild).role_request_message.set(message_id)
 
-        if message_id != None:
-            await ctx.send(info("The message id {message} will be used for users to select roles.".format(message=msg.id)))
+        if message_id is not None:
+            await ctx.send(
+                info("The message id {message} will be used for users to select roles.".format(message=msg.id)))
         else:
             await ctx.send(info("No message is configured for user to select roles."))
 
@@ -82,27 +87,34 @@ class VisualRolesCog(commands.Cog):
         role_embed.description = "**Roles that have been linked with custom emoji.\n\n**"
 
         if not roledict:
-            role_embed.add_field(name = "No roles have been linked with custom emoji yet. Use the link command to add one:", value = "```{p}visualroles link some_role custom_emoji```".format(p=ctx.prefix))
+            role_embed.add_field(
+                name="No roles have been linked with custom emoji yet. Use the link command to add one:",
+                value="```{p}visualroles link some_role custom_emoji```".format(p=ctx.prefix))
         else:
             # get the valid custom emoji and list them along with valid roles
-            role_embed.add_field(name = "__**Valid Links**__", value = "*Both the role and the custom emoji exist on the server.*\n\u200b", inline = False)
+            role_embed.add_field(name="__**Valid Links**__",
+                                 value="*Both the role and the custom emoji exist on the server.*\n\u200b",
+                                 inline=False)
             for key in roledict:
-                valid_emoji = discord.utils.get(ctx.guild.emoji, name=roledict[key])
+                valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
                 valid_role = get(ctx.guild.roles, name=key)
                 if valid_emoji and valid_role:
-                    role_embed.add_field(name = valid_emoji, value = "The role **" + str(key) + "** is linked to the custom emoji **" + str(roledict[key]) + "**.", inline = True)
+                    role_embed.add_field(name=valid_emoji,
+                                         value="The role **" + str(key) + "** is linked to the custom emoji **" + str(
+                                             roledict[key]) + "**.", inline=True)
 
-            role_embed.add_field(name = "\u200b", value = "\u200b", inline = False)
+            role_embed.add_field(name="\u200b", value="\u200b", inline=False)
 
             # get the invalid emoji and list them along with valid roles
-            role_embed.add_field(name = "__**Invalid Links**__", value = "*The role or custom emoji does not exist on the server.*\n\u200b", inline = False)
+            role_embed.add_field(name="__**Invalid Links**__",
+                                 value="*The role or custom emoji does not exist on the server.*\n\u200b", inline=False)
             for key in roledict:
-                valid_emoji = discord.utils.get(ctx.guild.emoji, name=roledict[key])
+                valid_emoji = discord.utils.get(ctx.guild.emojis, name=roledict[key])
                 valid_role = get(ctx.guild.roles, name=key)
                 if not valid_emoji or not valid_role:
-                    role_embed.add_field(name = key, value = roledict[key], inline = True)
+                    role_embed.add_field(name=key, value=roledict[key], inline=True)
 
-        await ctx.send(embed = role_embed)
+        await ctx.send(embed=role_embed)
 
     @visualroles.command(name="link")
     async def link_role_to_reaction(self, ctx, role, emoji):
@@ -121,16 +133,15 @@ class VisualRolesCog(commands.Cog):
             await ctx.send(error("You must specify a custom emoji."))
             return
 
-        valid_emoji = discord.utils.get(ctx.guild.emoji, name=emoji)
+        valid_emoji = discord.utils.get(ctx.guild.emojis, name=emoji)
 
         if valid_emoji:
             roledict = await self.config.guild(ctx.guild).role_reactions()
-            roledict.update({role : emoji})
+            roledict.update({role: emoji})
             await self.config.guild(ctx.guild).role_reactions.set(roledict)
             await ctx.send(info("Role and custom emoji linked successfully!"))
         else:
             await ctx.send(error("No valid custom emoji found with that name."))
-
 
     @visualroles.command(name="unlink")
     async def unlink_role_to_reaction(self, ctx, role):
@@ -145,8 +156,6 @@ class VisualRolesCog(commands.Cog):
             roledict.pop(role)
         except KeyError:
             await ctx.send(error("{role} was not found in the list of linked roles.".format(role=role)))
-        except:
-            await ctx.send(error("Hmmm. Something went wrong. Perhaps try again."))
         else:
             await self.config.guild(ctx.guild).role_reactions.set(roledict)
             await ctx.send("Successfully unlinked {role}!".format(role=role))
@@ -162,16 +171,16 @@ class VisualRolesCog(commands.Cog):
         settings_embed.description = "**Current channel id and message id settings.\n\n**"
 
         if channel_id:
-            settings_embed.add_field(name = "__**Channel ID**__", value = channel_id, inline = False)
+            settings_embed.add_field(name="__**Channel ID**__", value=channel_id, inline=False)
         else:
-            settings_embed.add_field(name = "__**Channel ID**__", value = "A channel id has not been set.", inline = False)
+            settings_embed.add_field(name="__**Channel ID**__", value="A channel id has not been set.", inline=False)
 
         if message_id:
-            settings_embed.add_field(name = "__**Channel ID**__", value = message_id, inline = False)
+            settings_embed.add_field(name="__**Channel ID**__", value=message_id, inline=False)
         else:
-            settings_embed.add_field(name = "__**Message ID**__", value = "A message id has not been set.", inline = False)
+            settings_embed.add_field(name="__**Message ID**__", value="A message id has not been set.", inline=False)
 
-        await ctx.send(embed = settings_embed)
+        await ctx.send(embed=settings_embed)
 
     @visualroles.command(name="clearall")
     async def clear_all(self, ctx):
@@ -183,7 +192,7 @@ class VisualRolesCog(commands.Cog):
     async def on_raw_reaction_add(self, payload):
         """Add a role to a member based on their reaction."""
         if payload.guild_id is None:
-            return # Reaction is on a private message
+            return  # Reaction is on a private message
 
         guild = self.bot.get_guild(payload.guild_id)
         member = guild.get_member(payload.user_id)
@@ -196,7 +205,7 @@ class VisualRolesCog(commands.Cog):
                 role_name = key
 
         if payload.channel_id == channel_id and payload.message_id == message_id and role_name:
-            role = discord.utils.get(guild.roles, name = role_name)
+            role = discord.utils.get(guild.roles, name=role_name)
             if role:
                 await member.add_roles(role, reason="auto role assignment")
                 # TODO: send message to member if they already have the role
@@ -206,7 +215,7 @@ class VisualRolesCog(commands.Cog):
     async def on_raw_reaction_remove(self, payload):
         """Remove a role from a member based on their reaction."""
         if payload.guild_id is None:
-            return # Reaction is on a private message
+            return  # Reaction is on a private message
 
         guild = self.bot.get_guild(payload.guild_id)
         member = guild.get_member(payload.user_id)
@@ -219,7 +228,7 @@ class VisualRolesCog(commands.Cog):
                 role_name = key
 
         if payload.channel_id == channel_id and payload.message_id == message_id and role_name:
-            role = discord.utils.get(guild.roles, name = role_name)
+            role = discord.utils.get(guild.roles, name=role_name)
             if role:
                 await member.remove_roles(role, reason="auto role assignment")
                 # TODO: send message to member if they don't have the role
