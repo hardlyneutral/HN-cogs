@@ -5,6 +5,7 @@ from redbot.core.utils.chat_formatting import escape, info, error
 
 class VisualRolesCog(commands.Cog):
     """Adds or removes roles for a user based on reactions."""
+    
     def __init__(self, bot):
 
         default_guild = {
